@@ -95,11 +95,12 @@ def main():
     
     # 専門家選択（常に表示）
     st.subheader("🎯 専門家選択")
-    expert_type = st.selectbox(
+    expert_type = st.radio(
         "相談したい専門家を選択してください:",
         ["医療専門家", "ITエンジニア", "ビジネスコンサルタント", "教育専門家", "料理研究家"],
         index=0,
-        help="選択した専門家の知識を活用して回答します"
+        help="選択した専門家の知識を活用して回答します",
+        horizontal=False
     )
     
     # 選択された専門家の説明
