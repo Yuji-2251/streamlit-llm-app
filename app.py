@@ -3,16 +3,13 @@ load_dotenv()
 
 import streamlit as st
 import os
-from dotenv import load_dotenv
+
 try:
     from langchain_openai import ChatOpenAI
     from langchain_core.messages import SystemMessage, HumanMessage
 except ImportError:
     from langchain.chat_models import ChatOpenAI
     from langchain.schema import SystemMessage, HumanMessage
-
-# 環境変数を読み込み
-load_dotenv()
 
 def get_llm_response(input_text, expert_type):
     """
@@ -36,15 +33,16 @@ def get_llm_response(input_text, expert_type):
     }
     
     try:
-        # OpenAI APIキーの確認
-        if not os.getenv("OPENAI_API_KEY"):
-            return "エラー: OpenAI APIキーが設定されていません。.envファイルにOPENAI_API_KEYを設定してください。"
+        # OpenAI APIキーの確認（Streamlit Secretsから取得）
+        openai_api_key = st.secrets.get("OPENAI_API_KEY")
+        if not openai_api_key:
+            return "エラー: OpenAI APIキーが設定されていません。Streamlit Secretsでセットアップしてください。"
         
         # ChatOpenAIインスタンスを作成
         llm = ChatOpenAI(
             model="gpt-3.5-turbo",
             temperature=0.7,
-            api_key=os.getenv("OPENAI_API_KEY")
+            api_key=openai_api_key
         )
         
         # メッセージを作成
@@ -155,3 +153,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
