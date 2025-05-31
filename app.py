@@ -5,8 +5,13 @@ try:
     from langchain_openai import ChatOpenAI
     from langchain_core.messages import SystemMessage, HumanMessage
 except ImportError:
-    from langchain.chat_models import ChatOpenAI
-    from langchain.schema import SystemMessage, HumanMessage
+    try:
+        from langchain_community.chat_models import ChatOpenAI
+        from langchain_core.messages import SystemMessage, HumanMessage
+    except ImportError:
+        # 古いバージョンのLangChainの場合
+        from langchain.chat_models import ChatOpenAI
+        from langchain.schema import SystemMessage, HumanMessage
 
 def get_llm_response(input_text, expert_type):
     """
