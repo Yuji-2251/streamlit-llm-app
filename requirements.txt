@@ -44,4 +44,5 @@ watchdog==6.0.0
 streamlit
 langchain-openai
 langchain-core
+python-dotenv
 

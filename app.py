@@ -1,5 +1,9 @@
 import streamlit as st
 import os
+from dotenv import load_dotenv
+
+# 環境変数を読み込み
+load_dotenv()
 
 try:
     from langchain_openai import ChatOpenAI
@@ -35,18 +39,21 @@ def get_llm_response(input_text, expert_type):
     }
     
     try:
-        # OpenAI APIキーの確認
+        # OpenAI APIキーの取得順序を変更
         openai_api_key = None
         
-        # Streamlit Secretsから取得を試行
-        try:
-            openai_api_key = st.secrets["OPENAI_API_KEY"]
-        except (KeyError, FileNotFoundError):
-            # 環境変数から取得を試行
-            openai_api_key = os.getenv("OPENAI_API_KEY")
+        # 1. 環境変数から取得（.envファイル含む）
+        openai_api_key = os.getenv("OPENAI_API_KEY")
+        
+        # 2. 環境変数が見つからない場合、Streamlit Secretsから取得を試行
+        if not openai_api_key:
+            try:
+                openai_api_key = st.secrets["OPENAI_API_KEY"]
+            except (KeyError, FileNotFoundError):
+                pass
         
         if not openai_api_key:
-            return "エラー: OpenAI APIキーが設定されていません。Streamlit SecretsまたはGitHub Secretsで設定してください。"
+            return "エラー: OpenAI APIキーが設定されていません。.envファイル、環境変数、またはStreamlit Secretsで設定してください。"
         
         # ChatOpenAIインスタンスを作成
         llm = ChatOpenAI(
@@ -200,3 +207,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
